@@ -1,7 +1,5 @@
 package com.praveen.mapper;
 
-import org.springframework.stereotype.Component;
-
 import com.praveen.dto.ProductDto;
 import com.praveen.model.Product;
 

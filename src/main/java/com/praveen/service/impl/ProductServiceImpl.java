@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import com.praveen.dto.ProductDto;
-
+import com.praveen.mapper.ProductMapper;
 import com.praveen.model.Product;
 import com.praveen.repository.ProductRepository;
 import com.praveen.service.ProductService;
@@ -27,6 +27,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ModelMapper mapper;
+	
+	@Autowired
+	private ProductMapper productMapper;
 
 	@Override
 	public Boolean saveProduct(ProductDto productDto) {
@@ -38,8 +41,9 @@ public class ProductServiceImpl implements ProductService {
 //		product.setPrice(productDto.getPrice());
 //		product.setQuantity(productDto.getQuantity());
 
-		Product product = mapper.map(productDto, Product.class);
-		Product save = productRepository.save(product);
+		//Product product = mapper.map(productDto, Product.class);
+		Product product1 = productMapper.toProduct(productDto);
+		Product save = productRepository.save(product1);
 		if (ObjectUtils.isEmpty(save)) // save=!nulll
 		{
 			return false;
@@ -50,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public List<ProductDto> getAllProducts() {
 		List<Product> productList = productRepository.findAll();
-		List<ProductDto> productDtoList = productList.stream().map(product -> mapper.map(product, ProductDto.class))
+		List<ProductDto> productDtoList = productList.stream().map(product -> productMapper.toProductDto(product))
 				.collect(Collectors.toList());
 
 		return productDtoList;
@@ -61,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
 		Optional<Product> findByProduct = productRepository.findById(id);
 		if (findByProduct.isPresent()) {
 			Product product = findByProduct.get();
-			ProductDto productDto = mapper.map(product, ProductDto.class);
+			ProductDto productDto = productMapper.toProductDto(product);
 			return productDto;
 		}
 		return null;
